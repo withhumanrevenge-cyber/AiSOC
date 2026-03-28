@@ -2,8 +2,6 @@ import { Groq } from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
-export const runtime = 'edge';
-
 // ─────────────────────────────────────────────
 // STRICT SOC SYSTEM PROMPT
 // ─────────────────────────────────────────────
