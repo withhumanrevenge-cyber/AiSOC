@@ -5,7 +5,7 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { PricingSection } from "@/components/pricing-section";
 import { ShieldAlert } from "lucide-react";
 import Link from "next/link";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function PricingPage() {
   return (
@@ -21,16 +21,16 @@ export default function PricingPage() {
            <span className="font-bold tracking-tighter text-lg text-white">AiSOC // INTEL</span>
          </Link>
          <div className="flex items-center gap-4 z-50 relative pointer-events-auto">
-           <Show when="signed-out">
+           <SignedOut>
              <SignInButton mode="modal">
                <button className="px-5 py-2 rounded-full border border-zinc-800 bg-zinc-950/50 hover:bg-zinc-900 transition-colors text-xs font-bold tracking-widest uppercase text-white">
                  Operator_Login
                </button>
              </SignInButton>
-           </Show>
-           <Show when="signed-in">
+           </SignedOut>
+           <SignedIn>
              <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border-2 border-blue-500/30" } }} />
-           </Show>
+           </SignedIn>
          </div>
       </div>
 
