@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { ShieldAlert, Zap, Lock, BarChart3, ArrowRight, Activity, Terminal, AlertTriangle } from "lucide-react";
+import { ShieldAlert, Zap, ArrowRight, Activity, Terminal, AlertTriangle } from "lucide-react";
 import { LogUploader } from "@/components/LogUploader";
 import { SecurityEvent, ThreatSummary } from "@/lib/parser";
 import { motion, AnimatePresence } from "motion/react";
@@ -12,13 +12,14 @@ import { TimelineChart } from "@/components/timeline-chart";
 import { GeoMap } from "@/components/GeoMap";
 import { Globe, LayoutDashboard, History, Download } from "lucide-react";
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 
 export default function AnalyzePage() {
-  const router = useRouter();
+  const { user } = useUser();
   const [view, setView] = useState<"scan" | "summary" | "graph">("scan");
   const [events, setEvents] = useState<SecurityEvent[]>([]);
   const [summary, setSummary] = useState<ThreatSummary | null>(null);
@@ -55,19 +56,18 @@ export default function AnalyzePage() {
       <div className="fixed top-0 left-0 right-0 z-50 p-6 flex items-center justify-between pointer-events-none">
          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left cursor-pointer z-50 relative pointer-events-auto">
            <ShieldAlert className="w-6 h-6 text-blue-500" />
-           <span className="font-bold tracking-tighter text-lg text-white">AiSOC // INTEL</span>
+           <span className="font-bold tracking-tighter text-lg text-white">AISOC_INTEL</span>
          </Link>
          <div className="flex items-center gap-4 z-50 relative pointer-events-auto">
-           <SignedOut>
+           {!user ? (
              <SignInButton mode="modal">
                <button className="px-5 py-2 rounded-full border border-zinc-800 bg-zinc-950/50 hover:bg-zinc-900 transition-colors text-xs font-bold tracking-widest uppercase text-white">
                  Operator_Login
                </button>
              </SignInButton>
-           </SignedOut>
-           <SignedIn>
+           ) : (
              <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border-2 border-blue-500/30" } }} />
-           </SignedIn>
+           )}
          </div>
       </div>
 
@@ -98,7 +98,7 @@ export default function AnalyzePage() {
               </div>
               <div>
                 <h2 className="text-3xl font-bold tracking-tight text-white">Vibe Check <span className="text-blue-500 font-mono tracking-tighter">Complete</span></h2>
-                <p className="text-zinc-500 font-mono text-xs uppercase">Scan Report // Build: AI-SOC-V1</p>
+                <p className="text-zinc-500 font-mono text-xs uppercase">SEC_ANALYSIS_REPORT</p>
               </div>
             </div>
 
@@ -164,7 +164,7 @@ export default function AnalyzePage() {
                 </button>
                 <div>
                   <h2 className="text-2xl font-bold text-white tracking-tight">Threat <span className="text-blue-500 font-mono tracking-tighter">Command</span></h2>
-                  <p className="text-[10px] text-zinc-500 font-mono uppercase font-bold tracking-widest">Active_Session // ID: LOG-SEC-2024</p>
+                  <p className="text-[10px] text-zinc-500 font-mono uppercase font-bold tracking-widest">ACTIVE_THREAT_SESSION</p>
                 </div>
               </div>
               

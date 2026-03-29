@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
       <div className="fixed top-0 left-0 right-0 z-50 p-6 flex items-center justify-between bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <ShieldAlert className="w-5 h-5 text-blue-500" />
-          <span className="font-bold tracking-tighter text-sm text-white">AiSOC // RETURN</span>
+          <span className="font-bold tracking-tighter text-sm text-white">RETURN_TO_SYSTEM</span>
         </Link>
         <Link href="/" className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition-colors uppercase tracking-widest">
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard

@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-// ─────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────
 export interface AnalysisEvent {
   event_id: string;
   severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
@@ -44,9 +41,6 @@ interface UseAnalyzeReturn {
   reset: () => void;
 }
 
-// ─────────────────────────────────────────────
-// Severity color helper (use in your UI)
-// ─────────────────────────────────────────────
 export const SEVERITY_COLORS: Record<string, string> = {
   CRITICAL: "#ff2d55",
   HIGH:     "#ff9500",
@@ -54,9 +48,6 @@ export const SEVERITY_COLORS: Record<string, string> = {
   LOW:      "#34c759",
 };
 
-// ─────────────────────────────────────────────
-// Hook
-// ─────────────────────────────────────────────
 export function useAnalyze(): UseAnalyzeReturn {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);

@@ -26,7 +26,6 @@ export function AnalysisResultCard({ result }: Props) {
   return (
     <div className="space-y-6 font-mono text-sm">
 
-      {/* ── Header ── */}
       <div className={`rounded-lg border p-4 ${SEV_BG[sev]}`}>
         <div className="flex items-center justify-between mb-2">
           <span className={`text-xs font-bold px-2 py-1 rounded ${SEV_BADGE[sev]}`}>
@@ -38,7 +37,6 @@ export function AnalysisResultCard({ result }: Props) {
         <p className="mt-1 text-xs opacity-80">{result.threat_summary}</p>
       </div>
 
-      {/* ── Event Count ── */}
       <div className="grid grid-cols-4 gap-2">
         {Object.entries(result.event_count)
           .filter(([key]) => key !== "total")
@@ -58,7 +56,6 @@ export function AnalysisResultCard({ result }: Props) {
           ))}
       </div>
 
-      {/* ── Events Table ── */}
       <div>
         <h3 className="text-xs uppercase text-zinc-500 mb-2 tracking-widest">Events</h3>
         <div className="space-y-2">
@@ -91,7 +88,6 @@ export function AnalysisResultCard({ result }: Props) {
         </div>
       </div>
 
-      {/* ── IOCs ── */}
       {result.iocs.length > 0 && (
         <div>
           <h3 className="text-xs uppercase text-zinc-500 mb-2 tracking-widest">IOCs</h3>
@@ -108,7 +104,6 @@ export function AnalysisResultCard({ result }: Props) {
         </div>
       )}
 
-      {/* ── MITRE Techniques ── */}
       {result.mitre_techniques.length > 0 && (
         <div>
           <h3 className="text-xs uppercase text-zinc-500 mb-2 tracking-widest">
@@ -127,7 +122,6 @@ export function AnalysisResultCard({ result }: Props) {
         </div>
       )}
 
-      {/* ── Remediation ── */}
       <div>
         <h3 className="text-xs uppercase text-zinc-500 mb-2 tracking-widest">
           Remediation Steps
@@ -141,7 +135,6 @@ export function AnalysisResultCard({ result }: Props) {
         </ol>
       </div>
 
-      {/* ── Analyst Vibe ── */}
       <div className="rounded border border-zinc-700 bg-zinc-900 p-3 text-zinc-400 text-xs italic">
         &ldquo;{result.analyst_vibe}&rdquo;
       </div>

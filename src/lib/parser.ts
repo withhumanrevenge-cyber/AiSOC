@@ -21,10 +21,10 @@ export interface ThreatSummary {
   topThreatType: string;
 }
 
-export const parseSecurityLogs = (rawData: any): SecurityEvent[] => {
+export const parseSecurityLogs = (rawData: unknown): SecurityEvent[] => {
   const logs = Array.isArray(rawData) ? rawData : [rawData];
   
-  return logs.map((log, index) => ({
+  return logs.map((log: any, index) => ({
     id: log.id || log.eventID || `evt-${index}`,
     timestamp: log.timestamp || log.eventTime || new Date().toISOString(),
     source: log.source_ip || log.sourceIPAddress || log.source || "Unknown",

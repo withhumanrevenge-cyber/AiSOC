@@ -4,7 +4,7 @@ import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2024-12-18.acacia" as any,
+    apiVersion: "2026-03-25.dahlia",
   });
 
   const body = await req.text();
@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err: any) {
-    console.error("Webhook signature verification failed:", err.message);
+  } catch (err: unknown) {
+    console.error("Webhook signature verification failed:", err instanceof Error ? err.message : "Unknown error");
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 

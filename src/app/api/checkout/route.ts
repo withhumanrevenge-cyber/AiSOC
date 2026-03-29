@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2024-12-18.acacia" as any,
+    apiVersion: "2026-03-25.dahlia",
   });
 
   try {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
               name: "AiSOC Pro Plan",
               description: "Unlimited threat analysis and real-time streaming.",
             },
-            unit_amount: 2900, // $29.00
+            unit_amount: 2900,
             recurring: {
               interval: "month",
             },
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("STripe_Checkout_Error:", err);
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 });
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import {
   ReactFlow,
   useNodesState,
@@ -16,14 +16,25 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { SecurityEvent } from "@/lib/parser";
-import { ShieldAlert, Terminal, HelpCircle, Activity, Globe, LayoutDashboard, History, Zap } from "lucide-react";
+import { ShieldAlert, Terminal, HelpCircle, Activity } from "lucide-react";
 import { AttackerSidebar } from "./attacker-sidebar";
 
 interface ThreatGraphProps {
   events: SecurityEvent[];
 }
 
-const ThreatNode = ({ data }: any) => {
+interface ThreatNodeData {
+  icon?: React.ElementType;
+  borderColor?: string;
+  bgColor?: string;
+  iconBorderColor?: string;
+  iconColor?: string;
+  label: string;
+  value: string;
+  isLive?: boolean;
+}
+
+const ThreatNode = ({ data }: { data: ThreatNodeData }) => {
   const Icon = data.icon || HelpCircle;
   return (
     <div className={`p-4 rounded-xl border-2 backdrop-blur-xl bg-zinc-950/80 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center gap-3 min-w-[200px] hover:border-blue-500/50 transition-colors group ${data.borderColor || "border-zinc-800"}`}>
@@ -94,7 +105,7 @@ export const ThreatGraph = ({ events }: ThreatGraphProps) => {
         return levels[curr.severity] > levels[prev] ? curr.severity : prev;
       }, "Low");
 
-      const colorMap: Record<string, any> = {
+      const colorMap: Record<string, { border: string; icon: string; bg: string }> = {
         Low: { border: "border-emerald-500/30", icon: "text-emerald-500", bg: "bg-emerald-500/10" },
         Medium: { border: "border-amber-500/30", icon: "text-amber-500", bg: "bg-amber-500/10" },
         High: { border: "border-orange-500/30", icon: "text-orange-500", bg: "bg-orange-500/10" },
@@ -119,7 +130,7 @@ export const ThreatGraph = ({ events }: ThreatGraphProps) => {
           iconColor: colors.icon,
           borderColor: colors.border,
           iconBorderColor: colors.border,
-          isLive: isLive && Math.random() > 0.5
+          isLive: isLive && idx % 2 === 0
         },
       });
     });

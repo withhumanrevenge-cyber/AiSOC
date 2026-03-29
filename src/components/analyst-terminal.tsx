@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { X, Terminal, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+import { motion } from "motion/react";
+import { X, Terminal, Loader2, ShieldCheck } from "lucide-react";
 import { SecurityEvent, ThreatSummary } from "@/lib/parser";
 
 interface AnalystTerminalProps {
@@ -20,8 +20,7 @@ export const AnalystTerminal = ({ summary, events, onClose }: AnalystTerminalPro
 
   useEffect(() => {
     analyze({ summary, events });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run once on mount
+  }, [analyze, summary, events]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -36,18 +35,16 @@ export const AnalystTerminal = ({ summary, events, onClose }: AnalystTerminalPro
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="relative w-full max-w-2xl bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl shadow-blue-500/10"
       >
-        {/* Terminal Header */}
         <div className="flex items-center justify-between px-4 py-3 bg-zinc-900 border-b border-zinc-800">
           <div className="flex items-center gap-3">
             <Terminal className="w-4 h-4 text-zinc-500" />
-            <span className="text-xs font-mono font-bold text-zinc-400 tracking-tighter">SEC_OPS // KERNEL-70B</span>
+            <span className="text-xs font-mono font-bold text-zinc-400 tracking-tighter">THREAT_ANALYSIS_STREAM</span>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-zinc-800 rounded-md transition-colors text-zinc-500 hover:text-white">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Terminal Body */}
         <div 
           ref={scrollRef}
           className="p-6 h-[400px] overflow-y-auto font-mono text-sm leading-relaxed scrollbar-thin scrollbar-thumb-zinc-800"
@@ -67,8 +64,7 @@ export const AnalystTerminal = ({ summary, events, onClose }: AnalystTerminalPro
               <div className="flex items-start gap-3">
                  <span className="text-red-500 shrink-0">{">>"}</span>
                  <div className="whitespace-pre-wrap text-red-500">
-                   ERROR: {error}
-                   <br/>PLEASE_CHECK_API_CONFIG...
+                    ERROR: {error}
                  </div>
               </div>
             ) : result ? (
@@ -93,7 +89,6 @@ export const AnalystTerminal = ({ summary, events, onClose }: AnalystTerminalPro
           </div>
         </div>
 
-        {/* Input Bar Mock */}
         <div className="px-4 py-3 bg-zinc-900/50 border-t border-zinc-800 flex items-center gap-3 text-xs font-mono">
            <span className="text-green-500">SYS_READY</span>
            <span className="text-zinc-600">|</span>

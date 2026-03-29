@@ -5,12 +5,13 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { ShieldAlert, Zap, Lock, BarChart3, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { PricingSection } from "@/components/pricing-section";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
-  const router = useRouter();
+  const { user } = useUser();
 
   return (
     <main className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden selection:bg-blue-500/30 bg-zinc-950 font-sans">
@@ -18,23 +19,21 @@ export default function Home() {
         <BackgroundBeams />
       </div>
 
-      {/* Persistent Auth Header */}
       <div className="fixed top-0 left-0 right-0 z-50 p-6 flex items-center justify-between pointer-events-none">
          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left cursor-pointer z-50 relative pointer-events-auto">
            <ShieldAlert className="w-6 h-6 text-blue-500" />
-           <span className="font-bold tracking-tighter text-lg text-white">AiSOC // INTEL</span>
+           <span className="font-bold tracking-tighter text-lg text-white">AISOC_INTEL</span>
          </Link>
          <div className="flex items-center gap-4 z-50 relative pointer-events-auto">
-           <SignedOut>
+           {!user ? (
              <SignInButton mode="modal">
                <button className="px-5 py-2 rounded-full border border-zinc-800 bg-zinc-950/50 hover:bg-zinc-900 transition-colors text-xs font-bold tracking-widest uppercase text-white">
                  Operator_Login
                </button>
              </SignInButton>
-           </SignedOut>
-           <SignedIn>
+           ) : (
              <UserButton appearance={{ elements: { userButtonAvatarBox: "w-10 h-10 border-2 border-blue-500/30" } }} />
-           </SignedIn>
+           )}
          </div>
       </div>
 
@@ -48,7 +47,7 @@ export default function Home() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 text-xs font-medium tracking-wider uppercase border rounded-full border-blue-500/30 bg-blue-500/10 text-blue-400">
               <Zap className="w-3 h-3" />
-              Neural Threat Detection Engine // v3.3
+              NEURAL_THREAT_DETECTION_ENGINE
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-500">
@@ -96,7 +95,6 @@ export default function Home() {
               <PricingSection />
             </div>
 
-            {/* Footer */}
             <footer className="w-full mt-24 mb-12 border-t border-zinc-800/50 pt-8 flex flex-col md:flex-row items-center justify-between text-zinc-500 text-sm z-20 relative">
               <p>&copy; {new Date().getFullYear()} AiSOC Security. All rights reserved.</p>
               <div className="flex gap-6 mt-4 md:mt-0">

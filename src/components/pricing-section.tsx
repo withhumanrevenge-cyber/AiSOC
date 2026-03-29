@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Check, Zap, Shield, Crown } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { motion } from "motion/react";
 
 const plans = [

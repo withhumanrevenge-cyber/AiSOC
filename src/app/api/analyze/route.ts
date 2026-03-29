@@ -2,9 +2,6 @@ import { Groq } from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
-// ─────────────────────────────────────────────
-// STRICT SOC SYSTEM PROMPT
-// ─────────────────────────────────────────────
 const SOC_SYSTEM_PROMPT = `
 You are a senior SOC (Security Operations Center) analyst with 10+ years of experience
 in threat detection, incident response, and malware analysis.
@@ -83,9 +80,6 @@ Return ONLY this JSON schema, with no extra fields and no missing fields:
 }
 `;
 
-// ─────────────────────────────────────────────
-// OUTPUT VALIDATOR
-// ─────────────────────────────────────────────
 function validateAnalysis(data: unknown): { valid: boolean; error?: string } {
   if (typeof data !== "object" || data === null) {
     return { valid: false, error: "Response is not a JSON object" };
@@ -122,7 +116,6 @@ function validateAnalysis(data: unknown): { valid: boolean; error?: string } {
     return { valid: false, error: "events array is empty or missing" };
   }
 
-  // Guard against downgraded severity
   const events = obj.events as Array<Record<string, unknown>>;
   const hasCritical = events.some(
     (e) => (e.severity as string)?.toUpperCase() === "CRITICAL"
@@ -137,14 +130,10 @@ function validateAnalysis(data: unknown): { valid: boolean; error?: string } {
   return { valid: true };
 }
 
-// ─────────────────────────────────────────────
-// ROUTE HANDLER
-// ─────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     
-    // Check Clerk Session
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ 
@@ -163,91 +152,64 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Stringify logs cleanly for the prompt
     const logsString =
       typeof logs === "string" ? logs : JSON.stringify(logs, null, 2);
 
-    // Cap input size to avoid runaway token usage (~50KB limit)
-    if (logsString.length > 50000) {
+    if (logsString.length > 20000) {
       return NextResponse.json(
-        { error: "Log payload too large. Please upload logs under 50KB." },
+        { error: "Log payload too large. Please upload logs under 20KB for high-speed analysis." },
         { status: 413 }
       );
     }
 
-    let rawContent: string | null = null;
-    let attempts = 0;
-    const MAX_RETRIES = 2;
+    const response = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      temperature: 0.1,
+      max_tokens: 1024,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: SOC_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: `Analyze these logs:\n\n${logsString}`,
+        },
+      ],
+    });
 
-    while (attempts <= MAX_RETRIES) {
-      attempts++;
+    const rawContent = response.choices[0]?.message?.content ?? null;
 
-      const response = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.1,
-        max_tokens: 2000,
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: SOC_SYSTEM_PROMPT },
-          {
-            role: "user",
-            content: `Analyze the following security logs and return your analysis as JSON:\n\n${logsString}`,
-          },
-        ],
-      });
+    if (!rawContent) {
+      return NextResponse.json(
+        { error: "AI returned empty response." },
+        { status: 502 }
+      );
+    }
 
-      rawContent = response.choices[0]?.message?.content ?? null;
-
-      if (!rawContent) {
-        if (attempts > MAX_RETRIES) {
-          return NextResponse.json(
-            { error: "AI returned empty response after retries." },
-            { status: 502 }
-          );
-        }
-        continue;
-      }
-
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(rawContent);
-      } catch {
-        if (attempts > MAX_RETRIES) {
-          return NextResponse.json(
-            { error: "AI returned malformed JSON after retries." },
-            { status: 502 }
-          );
-        }
-        continue;
-      }
-
+    try {
+      const parsed = JSON.parse(rawContent);
       const validation = validateAnalysis(parsed);
       if (!validation.valid) {
-        if (attempts > MAX_RETRIES) {
-          return NextResponse.json(
-            {
-              error: `AI analysis failed validation: ${validation.error}`,
-              details: "The intelligence engine returned malformed data.",
-              raw: parsed,
-            },
-            { status: 502 }
-          );
-        }
-        continue;
+        return NextResponse.json(
+          { error: `Validation failed: ${validation.error}`, raw: parsed },
+          { status: 502 }
+        );
       }
-
-      // Return parsed data encapsulating it in { analysis: parsed } for useAnalyze compatibility
       return NextResponse.json({ analysis: parsed }, { status: 200 });
+    } catch {
+      return NextResponse.json(
+        { error: "Malformed JSON response from AI." },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json(
       { error: "Analysis failed after retries." },
       { status: 502 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[AiSOC Analyze Error]", err);
     return NextResponse.json(
-      { error: "Internal server error. Please try again.", details: err.message },
+      { error: "Internal server error. Please try again.", details: err instanceof Error ? err.message : "Unknown error" },
       { status: 500 }
     );
   }

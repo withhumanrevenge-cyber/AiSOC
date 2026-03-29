@@ -11,7 +11,7 @@ interface TimelineChartProps {
 export const TimelineChart = ({ events }: TimelineChartProps) => {
   const data = events.slice(0, 12).map((e, i) => ({
     time: i + ":00",
-    threats: Math.floor(Math.random() * 10) + (e.severity === "Critical" ? 20 : 5),
+    threats: ((i * 7) % 10) + (e.severity === "Critical" ? 20 : 5),
   }));
 
   return (

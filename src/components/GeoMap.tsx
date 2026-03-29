@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import { motion } from "motion/react";
 import { SecurityEvent } from "@/lib/parser";
@@ -34,7 +34,7 @@ export const GeoMap = ({ events }: GeoMapProps) => {
         if (isInternal) {
            return {
              ip: source,
-             coordinates: [Math.random() * 20 - 100, Math.random() * 20 + 30] as [number, number], // Simulating US region
+             coordinates: [Math.random() * 20 - 100, Math.random() * 20 + 30] as [number, number],
              severity,
            };
         }

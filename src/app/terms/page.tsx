@@ -8,7 +8,7 @@ export default function Terms() {
       <div className="fixed top-0 left-0 right-0 z-50 p-6 flex items-center justify-between bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <ShieldAlert className="w-5 h-5 text-blue-500" />
-          <span className="font-bold tracking-tighter text-sm text-white">AiSOC // RETURN</span>
+          <span className="font-bold tracking-tighter text-sm text-white">RETURN_TO_SYSTEM</span>
         </Link>
         <Link href="/" className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-white transition-colors uppercase tracking-widest">
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard
@@ -28,14 +28,14 @@ export default function Terms() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-3">1. Acceptance of Terms</h2>
             <p className="leading-relaxed">
-              By accessing and using AiSOC ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service. We reserve the right to update these terms at any time.
+              By accessing and using AiSOC (&quot;the Service&quot;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service. We reserve the right to update these terms at any time.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-3">2. Description of Service</h2>
             <p className="leading-relaxed">
-              AiSOC is an advanced threat visualization and intelligence platform that processes user-uploaded JSON security logs. The "Pro" tier provides unlimited file processing and real-time streaming capabilities.
+              AiSOC is an advanced threat visualization and intelligence platform that processes user-uploaded JSON security logs. The &quot;Pro&quot; tier provides unlimited file processing and real-time streaming capabilities.
             </p>
           </section>
 

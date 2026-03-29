@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { parseSecurityLogs, getThreatSummary, SecurityEvent, ThreatSummary } from "@/lib/parser";
-import { ShieldAlert, CheckCircle2, Loader2, AlertTriangle, Activity } from "lucide-react";
+import { Loader2, Activity } from "lucide-react";
 
 import { useUser } from "@clerk/nextjs";
 
@@ -37,13 +37,14 @@ export const LogUploader = ({ onScanComplete }: LogUploaderProps) => {
         
         startScanning(json);
       } catch (err) {
+        console.error("Failed to parse JSON", err);
         alert("Invalid JSON file.");
       }
     };
     reader.readAsText(file);
   };
 
-  const startScanning = async (data: any) => {
+  const startScanning = async (data: unknown) => {
     setIsScanning(true);
     
     const stages = [
@@ -54,15 +55,8 @@ export const LogUploader = ({ onScanComplete }: LogUploaderProps) => {
       "Generating remediation map..."
     ];
 
-    for (let i = 0; i < stages.length; i++) {
-      setStatusText(stages[i]);
-      setScanProgress((i + 1) * 20);
-      await new Promise(r => setTimeout(r, 800));
-    }
-
     const events = parseSecurityLogs(data);
 
-    // Gating Logic: Unlimited Files (Standard limited to 40 events)
     if (userTier === "standard" && events.length > 40) {
       alert(`[SYSTEM_LIMIT_REACHED]: Your current Standard tier supports a maximum of 40 events per scan. Detected: ${events.length}. Please upgrade to PRO for unlimited log analysis.`);
       setIsScanning(false);
